@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		261DB5DF19AAFB6800BF2058 /* ptmp_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 261DB5C219AAFB0E00BF2058 /* ptmp_client.c */; };
+		261DB5E019AAFB7200BF2058 /* ptmp_server_threaded.c in Sources */ = {isa = PBXBuildFile; fileRef = 261DB5C419AAFB4300BF2058 /* ptmp_server_threaded.c */; };
+		261DB5E119AB08BF00BF2058 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		261DB5E219AB08C600BF2058 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		261DB5F419AB740D00BF2058 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		261DB5F519AB741D00BF2058 /* ptmp_server_select.c in Sources */ = {isa = PBXBuildFile; fileRef = 261DB5E619AB73EF00BF2058 /* ptmp_server_select.c */; };
+		26A0CFFB19A8D07E00838DEC /* ptpchat.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0CFE519A73FB200838DEC /* ptpchat.c */; };
+		26A0D00A19A9288700838DEC /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		26A0D00B19A928D800838DEC /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		26A0D00D19A92CA400838DEC /* ptpchat_threaded.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0D00C19A92CA400838DEC /* ptpchat_threaded.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		261DB5C719AAFB5300BF2058 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		261DB5D419AAFB5D00BF2058 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		261DB5E919AB740000BF2058 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		26A0CFF019A8D06E00838DEC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		26A0CFFE19A8E9C100838DEC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		261DB5C219AAFB0E00BF2058 /* ptmp_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptmp_client.c; path = ChatClient/ptmp_client.c; sourceTree = SOURCE_ROOT; };
+		261DB5C419AAFB4300BF2058 /* ptmp_server_threaded.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ptmp_server_threaded.c; path = ChatClient/ptmp_server_threaded.c; sourceTree = SOURCE_ROOT; };
+		261DB5C919AAFB5300BF2058 /* PTMPChatClient */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTMPChatClient; sourceTree = BUILT_PRODUCTS_DIR; };
+		261DB5D619AAFB5D00BF2058 /* PTMPChatServerThreaded */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTMPChatServerThreaded; sourceTree = BUILT_PRODUCTS_DIR; };
+		261DB5E419AB5A3B00BF2058 /* Multithreaded algorithm */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Multithreaded algorithm"; path = "ChatClient/Multithreaded algorithm"; sourceTree = SOURCE_ROOT; };
+		261DB5E619AB73EF00BF2058 /* ptmp_server_select.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ptmp_server_select.c; path = ChatClient/ptmp_server_select.c; sourceTree = SOURCE_ROOT; };
+		261DB5EB19AB740000BF2058 /* PTMPChatServerSelect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTMPChatServerSelect; sourceTree = BUILT_PRODUCTS_DIR; };
+		261DB5F619AB764C00BF2058 /* Select algorithm */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Select algorithm"; path = "ChatClient/Select algorithm"; sourceTree = SOURCE_ROOT; };
+		26A0CFE519A73FB200838DEC /* ptpchat.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ptpchat.c; sourceTree = "<group>"; };
+		26A0CFF219A8D06E00838DEC /* PTPChat */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTPChat; sourceTree = BUILT_PRODUCTS_DIR; };
+		26A0D00019A8E9C100838DEC /* PTPChatThreaded */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTPChatThreaded; sourceTree = BUILT_PRODUCTS_DIR; };
+		26A0D00919A9288700838DEC /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
+		26A0D00C19A92CA400838DEC /* ptpchat_threaded.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ptpchat_threaded.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		261DB5C619AAFB5300BF2058 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261DB5E119AB08BF00BF2058 /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		261DB5D319AAFB5D00BF2058 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261DB5E219AB08C600BF2058 /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		261DB5E819AB740000BF2058 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261DB5F419AB740D00BF2058 /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A0CFEF19A8D06E00838DEC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A0D00A19A9288700838DEC /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A0CFFD19A8E9C100838DEC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A0D00B19A928D800838DEC /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		261DB5BA19AA62CA00BF2058 /* PTMPChat */ = {
+			isa = PBXGroup;
+			children = (
+				261DB5E419AB5A3B00BF2058 /* Multithreaded algorithm */,
+				261DB5F619AB764C00BF2058 /* Select algorithm */,
+				261DB5C219AAFB0E00BF2058 /* ptmp_client.c */,
+				261DB5C419AAFB4300BF2058 /* ptmp_server_threaded.c */,
+				261DB5E619AB73EF00BF2058 /* ptmp_server_select.c */,
+			);
+			name = PTMPChat;
+			path = PTMPChatThreaded;
+			sourceTree = "<group>";
+		};
+		26A0CFD919A73FB200838DEC = {
+			isa = PBXGroup;
+			children = (
+				26A0D00919A9288700838DEC /* libncurses.dylib */,
+				26A0CFE419A73FB200838DEC /* PTPChat */,
+				261DB5BA19AA62CA00BF2058 /* PTMPChat */,
+				26A0CFE319A73FB200838DEC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		26A0CFE319A73FB200838DEC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				26A0CFF219A8D06E00838DEC /* PTPChat */,
+				26A0D00019A8E9C100838DEC /* PTPChatThreaded */,
+				261DB5C919AAFB5300BF2058 /* PTMPChatClient */,
+				261DB5D619AAFB5D00BF2058 /* PTMPChatServerThreaded */,
+				261DB5EB19AB740000BF2058 /* PTMPChatServerSelect */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		26A0CFE419A73FB200838DEC /* PTPChat */ = {
+			isa = PBXGroup;
+			children = (
+				26A0CFE519A73FB200838DEC /* ptpchat.c */,
+				26A0D00C19A92CA400838DEC /* ptpchat_threaded.c */,
+			);
+			name = PTPChat;
+			path = ChatClient;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		261DB5C819AAFB5300BF2058 /* PTMPChatClient */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 261DB5CF19AAFB5300BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatClient" */;
+			buildPhases = (
+				261DB5C519AAFB5300BF2058 /* Sources */,
+				261DB5C619AAFB5300BF2058 /* Frameworks */,
+				261DB5C719AAFB5300BF2058 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTMPChatClient;
+			productName = PTMPChatClient;
+			productReference = 261DB5C919AAFB5300BF2058 /* PTMPChatClient */;
+			productType = "com.apple.product-type.tool";
+		};
+		261DB5D519AAFB5D00BF2058 /* PTMPChatServerThreaded */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 261DB5DC19AAFB5D00BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatServerThreaded" */;
+			buildPhases = (
+				261DB5D219AAFB5D00BF2058 /* Sources */,
+				261DB5D319AAFB5D00BF2058 /* Frameworks */,
+				261DB5D419AAFB5D00BF2058 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTMPChatServerThreaded;
+			productName = PTMPChatServerThreaded;
+			productReference = 261DB5D619AAFB5D00BF2058 /* PTMPChatServerThreaded */;
+			productType = "com.apple.product-type.tool";
+		};
+		261DB5EA19AB740000BF2058 /* PTMPChatServerSelect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 261DB5F119AB740000BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatServerSelect" */;
+			buildPhases = (
+				261DB5E719AB740000BF2058 /* Sources */,
+				261DB5E819AB740000BF2058 /* Frameworks */,
+				261DB5E919AB740000BF2058 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTMPChatServerSelect;
+			productName = PTMPChatServerSelect;
+			productReference = 261DB5EB19AB740000BF2058 /* PTMPChatServerSelect */;
+			productType = "com.apple.product-type.tool";
+		};
+		26A0CFF119A8D06E00838DEC /* PTPChat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26A0CFF819A8D06E00838DEC /* Build configuration list for PBXNativeTarget "PTPChat" */;
+			buildPhases = (
+				26A0CFEE19A8D06E00838DEC /* Sources */,
+				26A0CFEF19A8D06E00838DEC /* Frameworks */,
+				26A0CFF019A8D06E00838DEC /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTPChat;
+			productName = PTPChat;
+			productReference = 26A0CFF219A8D06E00838DEC /* PTPChat */;
+			productType = "com.apple.product-type.tool";
+		};
+		26A0CFFF19A8E9C100838DEC /* PTPChatThreaded */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26A0D00619A8E9C100838DEC /* Build configuration list for PBXNativeTarget "PTPChatThreaded" */;
+			buildPhases = (
+				26A0CFFC19A8E9C100838DEC /* Sources */,
+				26A0CFFD19A8E9C100838DEC /* Frameworks */,
+				26A0CFFE19A8E9C100838DEC /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTPChatThreaded;
+			productName = PTPChatThreaded;
+			productReference = 26A0D00019A8E9C100838DEC /* PTPChatThreaded */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		26A0CFDA19A73FB200838DEC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Itamar Ravid";
+			};
+			buildConfigurationList = 26A0CFDD19A73FB200838DEC /* Build configuration list for PBXProject "ChatClient" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 26A0CFD919A73FB200838DEC;
+			productRefGroup = 26A0CFE319A73FB200838DEC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				26A0CFF119A8D06E00838DEC /* PTPChat */,
+				26A0CFFF19A8E9C100838DEC /* PTPChatThreaded */,
+				261DB5C819AAFB5300BF2058 /* PTMPChatClient */,
+				261DB5D519AAFB5D00BF2058 /* PTMPChatServerThreaded */,
+				261DB5EA19AB740000BF2058 /* PTMPChatServerSelect */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		261DB5C519AAFB5300BF2058 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261DB5DF19AAFB6800BF2058 /* ptmp_client.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		261DB5D219AAFB5D00BF2058 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261DB5E019AAFB7200BF2058 /* ptmp_server_threaded.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		261DB5E719AB740000BF2058 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261DB5F519AB741D00BF2058 /* ptmp_server_select.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A0CFEE19A8D06E00838DEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A0CFFB19A8D07E00838DEC /* ptpchat.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A0CFFC19A8E9C100838DEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A0D00D19A92CA400838DEC /* ptpchat_threaded.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		261DB5D019AAFB5300BF2058 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		261DB5D119AAFB5300BF2058 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		261DB5DD19AAFB5D00BF2058 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		261DB5DE19AAFB5D00BF2058 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		261DB5F219AB740000BF2058 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		261DB5F319AB740000BF2058 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		26A0CFE919A73FB200838DEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		26A0CFEA19A73FB200838DEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		26A0CFF919A8D06E00838DEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		26A0CFFA19A8D06E00838DEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		26A0D00719A8E9C100838DEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		26A0D00819A8E9C100838DEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		261DB5CF19AAFB5300BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				261DB5D019AAFB5300BF2058 /* Debug */,
+				261DB5D119AAFB5300BF2058 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		261DB5DC19AAFB5D00BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatServerThreaded" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				261DB5DD19AAFB5D00BF2058 /* Debug */,
+				261DB5DE19AAFB5D00BF2058 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		261DB5F119AB740000BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatServerSelect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				261DB5F219AB740000BF2058 /* Debug */,
+				261DB5F319AB740000BF2058 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		26A0CFDD19A73FB200838DEC /* Build configuration list for PBXProject "ChatClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26A0CFE919A73FB200838DEC /* Debug */,
+				26A0CFEA19A73FB200838DEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26A0CFF819A8D06E00838DEC /* Build configuration list for PBXNativeTarget "PTPChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26A0CFF919A8D06E00838DEC /* Debug */,
+				26A0CFFA19A8D06E00838DEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26A0D00619A8E9C100838DEC /* Build configuration list for PBXNativeTarget "PTPChatThreaded" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26A0D00719A8E9C100838DEC /* Debug */,
+				26A0D00819A8E9C100838DEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 26A0CFDA19A73FB200838DEC /* Project object */;
+}

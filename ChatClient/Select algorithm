@@ -1,0 +1,18 @@
+Clients send and receive data as before. First message is the client name.
+
+Server loop:
+* while 1:
+    * select() on { listen_fd, all_client_sockets }
+    * foreach ready to read socket:
+        * if it's the listen_fd, accept connection, save sockfd, read client name, acquire list mutex, add to the list and release
+        * if it's a client socket:
+            * copy to transmit buffer
+            * signal transmit condition
+            * wait on transmitted condition
+            * acquire draw mutex, draw, release
+            
+* Transmit thread:
+    * while 1:
+        * wait on transmit condition
+        * acquire socket list mutex, transmit on all sockets, release
+        * signal the transmitted condition

@@ -1,0 +1,26 @@
+Clients send and receive data as before. First message is the client name.
+
+Servers:
+* spawn transmit thread
+* while 1:
+    * wait for connection
+    * accept connection and save sockfd
+    * read client name
+    * acquire socket list mutex
+    * spawn thread that runs thread_method, send it the sockfd and username
+    * release socket list mutex
+
+Transmit thread:
+* wait for transmit signal
+* copy from signaling thread buffer to own buffer
+* acquire socket list mutex
+* transmit on all sockets
+* release socket list mutex
+* signal the signaling thread
+
+Thread method:
+* wait for message on socket
+* copy to own buffer
+* signal transmit thread to transmit
+* wait for transmitted signal
+* acquire draw mutex, draw, release
