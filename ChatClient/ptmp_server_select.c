@@ -19,6 +19,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <sys/select.h>
 
 #include <termios.h>
 #include <curses.h>
@@ -26,28 +27,14 @@
 #define LEN_FIELD_SIZE 4
 #define MAX_CLIENTS 32
 
-typedef struct _thread_data_t {
-    int client_id;
-    int sock_fd;
-    char *username;
-    char *transmit_buffer;
-} thread_data_t;
-
 char *process_message(int sock_fd);
 void send_message(int sock_fd, const char *buf);
 
 void start_server_loop(const char *port);
-pthread_t spawn_client_thread(thread_data_t *thread_data);
-void *client_thread_loop(void *sock_fd_ptr);
 void *transmit_thread(void *unused);
 
 void write_in_window(const char *message, ...);
 void clear_window();
-
-/* Client threads */
-pthread_t client_threads[MAX_CLIENTS];
-thread_data_t client_data[MAX_CLIENTS];
-int client_counter;
 
 /* Current window line */
 int current_line, window_height, window_width;
@@ -60,7 +47,16 @@ pthread_cond_t copy_buffer_cond = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t transmitted_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t transmitted_cond = PTHREAD_COND_INITIALIZER;
 
-int copy_from = -1, transmitted_from = -1;
+int copy_buffer_flag = -1, transmitted_flag = -1;
+char *copy_buffer;
+
+typedef struct _client_data {
+    int sock_fd;
+    char *username;
+} client_data_t;
+
+client_data_t clients[MAX_CLIENTS];
+int clients_counter = 0;
 
 void pack_32i(uint32_t value, char *buffer) {
     *buffer = value >> 24;
@@ -144,10 +140,7 @@ char *process_message(int sock_fd) {
 }
 
 void start_server_loop(const char *port) {
-    struct sockaddr_in local_address, remote_address;
-    socklen_t remote_address_size;
-    
-    int sock_fd, new_sock_fd;
+    struct sockaddr_in local_address;
     
     /* Specify socket parameters */
     local_address.sin_family = AF_INET;
@@ -155,26 +148,27 @@ void start_server_loop(const char *port) {
     local_address.sin_addr.s_addr = INADDR_ANY;
     
     /* Create a TCP socket */
-    if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+    int listen_fd;
+    if ((listen_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
         exit(-1);
     }
     
     /* Allow socket reusing */
     int value = 1;
-    if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int)) == -1) {
+    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int)) == -1) {
         perror("setsockopt");
         exit(-1);
     }
     
     /* Bind the socket */
-    if (bind(sock_fd, (struct sockaddr *) &local_address, sizeof(local_address)) == -1) {
+    if (bind(listen_fd, (struct sockaddr *) &local_address, sizeof(local_address)) == -1) {
         perror("bind");
         exit(-1);
     }
     
     /* Start listening */
-    if (listen(sock_fd, 2) == -1) {
+    if (listen(listen_fd, 2) == -1) {
         perror("listen");
         exit(-1);
     }
@@ -184,44 +178,85 @@ void start_server_loop(const char *port) {
     pthread_t transmit_handle;
     pthread_create(&transmit_handle, NULL, transmit_thread, NULL);
     
-    client_counter = 0;
+    struct sockaddr_in remote_address;
+    socklen_t remote_address_size = sizeof(remote_address);
+
+    fd_set all_sockets, ready_sockets;
+    int max_fd;
+
+    FD_SET(listen_fd, &all_sockets);
+    max_fd = listen_fd;
     
-    /* Connection handling loop */
-    while (client_counter < MAX_CLIENTS) {
-        remote_address_size = sizeof(remote_address);
-        client_data[client_counter].sock_fd = accept(sock_fd, (struct sockaddr *) &remote_address, &remote_address_size);
+    while (1) {
+        ready_sockets = all_sockets;
+        if (select(max_fd + 1, &ready_sockets, NULL, NULL, NULL) == -1) {
+            perror("select");
+            exit(1);
+        }
         
-        /* Accept the username message */
-        client_data[client_counter].username = process_message(client_data[client_counter].sock_fd);
-        client_data[client_counter].client_id = client_counter;
-        
-        write_in_window("[info] Received connection");
-        
-        /* Lock the list and counter so the transmit thread does not use them concurrently */
-        pthread_mutex_lock(&client_list_mutex);
-        client_threads[client_counter] = spawn_client_thread(&client_data[client_counter]);
-        client_counter++;
-        pthread_mutex_unlock(&client_list_mutex);
+        int i;
+        for (i = 0; i <= max_fd; i++) {
+            if (FD_ISSET(i, &ready_sockets)) {
+                if (i == listen_fd) {
+                    /* New connection waiting */
+                    int new_sock_fd = accept(listen_fd, (struct sockaddr *) &remote_address, &remote_address_size);
+                    char *username = process_message(new_sock_fd);
+                    
+                    if ((clients_counter + 1) == MAX_CLIENTS) {
+                        /* Max amount of clients reached */
+                        send_message(new_sock_fd, "Too many clients!");
+                        close(new_sock_fd);
+                        free(username);
+                        continue;
+                    }
+                    
+                    /* Add to socket list */
+                    FD_SET(new_sock_fd, &all_sockets);
+                    
+                    /* Keep track of maximum fd value */
+                    if (new_sock_fd > max_fd)
+                        max_fd = new_sock_fd;
+                    
+                    pthread_mutex_lock(&client_list_mutex);
+                        clients[clients_counter].sock_fd = new_sock_fd;
+                        clients[clients_counter].username = username;
+                        clients_counter++;
+                    pthread_mutex_unlock(&client_list_mutex);
+                } else {
+                    /* Client wants to send data */
+                    copy_buffer = process_message(i);
+                    
+                    pthread_mutex_lock(&copy_buffer_mutex);
+                        /* The transmit thread needs the origin of the message */
+                        copy_buffer_flag = i;
+                    
+                        /* Signal the transmitter to start */
+                        pthread_cond_signal(&copy_buffer_cond);
+                    pthread_mutex_unlock(&copy_buffer_mutex);
+                    
+                    pthread_mutex_lock(&transmitted_mutex);
+                        /* Wait for the transmitter to finish */
+                        while (!transmitted_flag)
+                            pthread_cond_wait(&transmitted_cond, &transmitted_mutex);
+                    
+                        /* Reset the flag */
+                        transmitted_flag = FALSE;
+                    pthread_mutex_unlock(&transmitted_mutex);
+                    
+                    /* Print the message on the server */
+                    pthread_mutex_lock(&draw_mutex);
+                        write_in_window(copy_buffer);
+                    pthread_mutex_unlock(&draw_mutex);
+                    
+                    free(copy_buffer);
+                }
+            }
+        }
     }
     
-    /* Wait for threads to finish */
-    int i;
-    for (int i = 0; i < MAX_CLIENTS; i++)
-        pthread_join(client_threads[i], NULL);
     
     /* Close listening socket */
-    close(sock_fd);
-}
-
-pthread_t spawn_client_thread(thread_data_t *thread_data) {
-    pthread_attr_t joinable_attr;
-    pthread_attr_init(&joinable_attr);
-    pthread_attr_setdetachstate(&joinable_attr, TRUE);
-    
-    pthread_t thread_handle;
-    pthread_create(&thread_handle, &joinable_attr, client_thread_loop, (void *) thread_data);
-    
-    return thread_handle;
+    close(listen_fd);
 }
 
 void write_in_window(const char *message, ...) {
@@ -239,58 +274,29 @@ void write_in_window(const char *message, ...) {
     wrefresh(stdscr);
 }
 
-void *client_thread_loop(void *thread_data) {
-    /* process_message
-     * Acquire draw mutex, draw, release
-     * Repeat
-     */
-    thread_data_t *data = (thread_data_t *) thread_data;
-    
-    while (1) {
-        data->transmit_buffer = process_message(data->sock_fd);
-        
-        pthread_mutex_lock(&copy_buffer_mutex);
-        copy_from = data->client_id;
-        pthread_cond_signal(&copy_buffer_cond);
-        pthread_mutex_unlock(&copy_buffer_mutex);
-        
-        pthread_mutex_lock(&transmitted_mutex);
-        while (transmitted_from != data->client_id)
-            pthread_cond_wait(&transmitted_cond, &transmitted_mutex);
-        
-        transmitted_from = -1;
-        pthread_mutex_unlock(&transmitted_mutex);
-        
-        pthread_mutex_lock(&draw_mutex);
-        write_in_window(data->transmit_buffer);
-        pthread_mutex_unlock(&draw_mutex);
-        
-        free(data->transmit_buffer);
-    }
-}
-
 void *transmit_thread(void *unused) {
-    int saved_copy_from;
-    
     while (1) {
         pthread_mutex_lock(&copy_buffer_mutex);
-        while (copy_from == -1)
-            pthread_cond_wait(&copy_buffer_cond, &copy_buffer_mutex);
+            /* Wait for a buffer to become available */
+            while (copy_buffer_flag == -1)
+                pthread_cond_wait(&copy_buffer_cond, &copy_buffer_mutex);
+
+            pthread_mutex_lock(&client_list_mutex);
+                int i;
+                for (i = 0; i < clients_counter; ++i)
+                    /* copy_buffer_flag holds the originating socket; don't repeat the message there */
+                    if (clients[i].sock_fd != copy_buffer_flag)
+                        send_message(clients[i].sock_fd, copy_buffer);
+            pthread_mutex_unlock(&client_list_mutex);
         
-        pthread_mutex_lock(&client_list_mutex);
-        int i;
-        for (i = 0; i < client_counter; i++)
-            if (i != copy_from)
-                send_message(client_data[i].sock_fd, client_data[copy_from].transmit_buffer);
-        pthread_mutex_unlock(&client_list_mutex);
-        
-        saved_copy_from = copy_from;
-        copy_from = -1;
+            /* Clear the flag */
+            copy_buffer_flag = -1;
         pthread_mutex_unlock(&copy_buffer_mutex);
         
         pthread_mutex_lock(&transmitted_mutex);
-        transmitted_from = saved_copy_from;
-        pthread_cond_signal(&transmitted_cond);
+            transmitted_flag = TRUE;
+            /* Signal the main thread that we have finished transmitting */
+            pthread_cond_signal(&transmitted_cond);
         pthread_mutex_unlock(&transmitted_mutex);
     }
 }
