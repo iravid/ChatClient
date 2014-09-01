@@ -17,6 +17,10 @@
 		26A0D00A19A9288700838DEC /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
 		26A0D00B19A928D800838DEC /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
 		26A0D00D19A92CA400838DEC /* ptpchat_threaded.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0D00C19A92CA400838DEC /* ptpchat_threaded.c */; };
+		26A9159419B51B1000BCC1C8 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		26A915A219B51B2300BCC1C8 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0D00919A9288700838DEC /* libncurses.dylib */; };
+		26A915A419B51B6C00BCC1C8 /* ptmp_client_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A915A319B51B6C00BCC1C8 /* ptmp_client_broadcast.c */; };
+		26A915A619B526DE00BCC1C8 /* ptmp_server_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A915A519B526DE00BCC1C8 /* ptmp_server_broadcast.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -65,6 +69,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		26A9158919B51AF800BCC1C8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		26A9159719B51B1A00BCC1C8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +103,10 @@
 		26A0D00019A8E9C100838DEC /* PTPChatThreaded */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTPChatThreaded; sourceTree = BUILT_PRODUCTS_DIR; };
 		26A0D00919A9288700838DEC /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
 		26A0D00C19A92CA400838DEC /* ptpchat_threaded.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ptpchat_threaded.c; sourceTree = "<group>"; };
+		26A9158B19B51AF800BCC1C8 /* PTMPServerBroadcast */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTMPServerBroadcast; sourceTree = BUILT_PRODUCTS_DIR; };
+		26A9159919B51B1A00BCC1C8 /* PTMPClientBroadcast */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTMPClientBroadcast; sourceTree = BUILT_PRODUCTS_DIR; };
+		26A915A319B51B6C00BCC1C8 /* ptmp_client_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptmp_client_broadcast.c; path = ChatClient/ptmp_client_broadcast.c; sourceTree = SOURCE_ROOT; };
+		26A915A519B526DE00BCC1C8 /* ptmp_server_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ptmp_server_broadcast.c; path = ChatClient/ptmp_server_broadcast.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +150,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		26A9158819B51AF800BCC1C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A9159419B51B1000BCC1C8 /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A9159619B51B1A00BCC1C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A915A219B51B2300BCC1C8 /* libncurses.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -133,6 +175,8 @@
 				261DB5E419AB5A3B00BF2058 /* Multithreaded algorithm */,
 				261DB5F619AB764C00BF2058 /* Select algorithm */,
 				261DB5C219AAFB0E00BF2058 /* ptmp_client.c */,
+				26A915A319B51B6C00BCC1C8 /* ptmp_client_broadcast.c */,
+				26A915A519B526DE00BCC1C8 /* ptmp_server_broadcast.c */,
 				261DB5C419AAFB4300BF2058 /* ptmp_server_threaded.c */,
 				261DB5E619AB73EF00BF2058 /* ptmp_server_select.c */,
 			);
@@ -158,6 +202,8 @@
 				261DB5C919AAFB5300BF2058 /* PTMPChatClient */,
 				261DB5D619AAFB5D00BF2058 /* PTMPChatServerThreaded */,
 				261DB5EB19AB740000BF2058 /* PTMPChatServerSelect */,
+				26A9158B19B51AF800BCC1C8 /* PTMPServerBroadcast */,
+				26A9159919B51B1A00BCC1C8 /* PTMPClientBroadcast */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -260,6 +306,40 @@
 			productReference = 26A0D00019A8E9C100838DEC /* PTPChatThreaded */;
 			productType = "com.apple.product-type.tool";
 		};
+		26A9158A19B51AF800BCC1C8 /* PTMPServerBroadcast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26A9159319B51AF800BCC1C8 /* Build configuration list for PBXNativeTarget "PTMPServerBroadcast" */;
+			buildPhases = (
+				26A9158719B51AF800BCC1C8 /* Sources */,
+				26A9158819B51AF800BCC1C8 /* Frameworks */,
+				26A9158919B51AF800BCC1C8 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTMPServerBroadcast;
+			productName = PTMPServerBroadcast;
+			productReference = 26A9158B19B51AF800BCC1C8 /* PTMPServerBroadcast */;
+			productType = "com.apple.product-type.tool";
+		};
+		26A9159819B51B1A00BCC1C8 /* PTMPClientBroadcast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26A9159F19B51B1A00BCC1C8 /* Build configuration list for PBXNativeTarget "PTMPClientBroadcast" */;
+			buildPhases = (
+				26A9159519B51B1A00BCC1C8 /* Sources */,
+				26A9159619B51B1A00BCC1C8 /* Frameworks */,
+				26A9159719B51B1A00BCC1C8 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTMPClientBroadcast;
+			productName = PTMPClientBroadcast;
+			productReference = 26A9159919B51B1A00BCC1C8 /* PTMPClientBroadcast */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -286,6 +366,8 @@
 				261DB5C819AAFB5300BF2058 /* PTMPChatClient */,
 				261DB5D519AAFB5D00BF2058 /* PTMPChatServerThreaded */,
 				261DB5EA19AB740000BF2058 /* PTMPChatServerSelect */,
+				26A9158A19B51AF800BCC1C8 /* PTMPServerBroadcast */,
+				26A9159819B51B1A00BCC1C8 /* PTMPClientBroadcast */,
 			);
 		};
 /* End PBXProject section */
@@ -328,6 +410,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				26A0D00D19A92CA400838DEC /* ptpchat_threaded.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A9158719B51AF800BCC1C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A915A619B526DE00BCC1C8 /* ptmp_server_broadcast.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26A9159519B51B1A00BCC1C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26A915A419B51B6C00BCC1C8 /* ptmp_client_broadcast.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +592,42 @@
 			};
 			name = Release;
 		};
+		26A9159119B51AF800BCC1C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		26A9159219B51AF800BCC1C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		26A915A019B51B1A00BCC1C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		26A915A119B51B1A00BCC1C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -504,6 +638,7 @@
 				261DB5D119AAFB5300BF2058 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		261DB5DC19AAFB5D00BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatServerThreaded" */ = {
 			isa = XCConfigurationList;
@@ -512,6 +647,7 @@
 				261DB5DE19AAFB5D00BF2058 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		261DB5F119AB740000BF2058 /* Build configuration list for PBXNativeTarget "PTMPChatServerSelect" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +656,7 @@
 				261DB5F319AB740000BF2058 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		26A0CFDD19A73FB200838DEC /* Build configuration list for PBXProject "ChatClient" */ = {
 			isa = XCConfigurationList;
@@ -547,6 +684,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		26A9159319B51AF800BCC1C8 /* Build configuration list for PBXNativeTarget "PTMPServerBroadcast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26A9159119B51AF800BCC1C8 /* Debug */,
+				26A9159219B51AF800BCC1C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		26A9159F19B51B1A00BCC1C8 /* Build configuration list for PBXNativeTarget "PTMPClientBroadcast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26A915A019B51B1A00BCC1C8 /* Debug */,
+				26A915A119B51B1A00BCC1C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

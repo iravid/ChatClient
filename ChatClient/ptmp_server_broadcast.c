@@ -33,10 +33,15 @@ typedef struct _thread_data_t {
     char *transmit_buffer;
 } thread_data_t;
 
+typedef struct _broadcast_data_t {
+    char *port;
+    char *room_name;
+} broadcast_data_t;
+
 char *process_message(int sock_fd);
 void send_message(int sock_fd, const char *buf);
 
-void start_server_loop(const char *port);
+void start_server_loop(const char *port, const char *room_name);
 pthread_t spawn_client_thread(thread_data_t *thread_data);
 void *client_thread_loop(void *sock_fd_ptr);
 void *transmit_thread(void *unused);
@@ -143,7 +148,39 @@ char *process_message(int sock_fd) {
     return data_buf;
 }
 
-void start_server_loop(const char *port) {
+void *broadcast_listener(void *arg) {
+    broadcast_data_t *broadcast_data = (broadcast_data_t *) arg;
+    
+    /* Pad the room name to 32 bytes */
+    char *padded_room_name = malloc(32);
+    strcpy(padded_room_name, broadcast_data->room_name);
+    memset((padded_room_name + strlen(padded_room_name)), '\0', 32 - strlen(padded_room_name));
+    
+    int sockfd;
+    struct addrinfo hints, *result;
+    
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_flags = AI_PASSIVE;
+    
+    getaddrinfo(NULL, broadcast_data->port, &hints, &result);
+    
+    sockfd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    
+    bind(sockfd, result->ai_addr, result->ai_addrlen);
+    
+    struct sockaddr_in sender_address;
+    socklen_t addr_len = sizeof(sender_address);
+    char *buf = malloc(2);
+    
+    while (1) {
+        int bytes_received = recvfrom(sockfd, buf, 2, 0, &sender_address, &addr_len);
+        sendto(sockfd, padded_room_name, 32, 0, (struct sockaddr *) &sender_address, addr_len);
+    }
+}
+
+void start_server_loop(const char *port, const char *room_name) {
     struct sockaddr_in local_address, remote_address;
     socklen_t remote_address_size;
     
@@ -184,6 +221,13 @@ void start_server_loop(const char *port) {
     pthread_t transmit_handle;
     pthread_create(&transmit_handle, NULL, transmit_thread, NULL);
     
+    broadcast_data_t *broadcast_data = malloc(sizeof(broadcast_data));
+    broadcast_data->port = port;
+    broadcast_data->room_name = room_name;
+    
+    pthread_t broadcast_handle;
+    pthread_create(&broadcast_handle, NULL, broadcast_listener, (void *) broadcast_data);
+    
     client_counter = 0;
     
     /* Connection handling loop */
@@ -199,8 +243,8 @@ void start_server_loop(const char *port) {
         
         /* Lock the list and counter so the transmit thread does not use them concurrently */
         pthread_mutex_lock(&client_list_mutex);
-            client_threads[client_counter] = spawn_client_thread(&client_data[client_counter]);
-            client_counter++;
+        client_threads[client_counter] = spawn_client_thread(&client_data[client_counter]);
+        client_counter++;
         pthread_mutex_unlock(&client_list_mutex);
     }
     
@@ -208,7 +252,7 @@ void start_server_loop(const char *port) {
     int i;
     for (int i = 0; i < MAX_CLIENTS; i++)
         pthread_join(client_threads[i], NULL);
-
+    
     /* Close listening socket */
     close(sock_fd);
 }
@@ -250,19 +294,19 @@ void *client_thread_loop(void *thread_data) {
         data->transmit_buffer = process_message(data->sock_fd);
         
         pthread_mutex_lock(&copy_buffer_mutex);
-            copy_from = data->client_id;
-            pthread_cond_signal(&copy_buffer_cond);
+        copy_from = data->client_id;
+        pthread_cond_signal(&copy_buffer_cond);
         pthread_mutex_unlock(&copy_buffer_mutex);
         
         pthread_mutex_lock(&transmitted_mutex);
-            while (transmitted_from != data->client_id)
-                pthread_cond_wait(&transmitted_cond, &transmitted_mutex);
+        while (transmitted_from != data->client_id)
+            pthread_cond_wait(&transmitted_cond, &transmitted_mutex);
         
-            transmitted_from = -1;
+        transmitted_from = -1;
         pthread_mutex_unlock(&transmitted_mutex);
         
         pthread_mutex_lock(&draw_mutex);
-            write_in_window(data->transmit_buffer);
+        write_in_window(data->transmit_buffer);
         pthread_mutex_unlock(&draw_mutex);
         
         free(data->transmit_buffer);
@@ -274,23 +318,23 @@ void *transmit_thread(void *unused) {
     
     while (1) {
         pthread_mutex_lock(&copy_buffer_mutex);
-            while (copy_from == -1)
-                pthread_cond_wait(&copy_buffer_cond, &copy_buffer_mutex);
-            
-            pthread_mutex_lock(&client_list_mutex);
-                int i;
-                for (i = 0; i < client_counter; i++)
-                    if (i != copy_from)
-                        send_message(client_data[i].sock_fd, client_data[copy_from].transmit_buffer);
-            pthread_mutex_unlock(&client_list_mutex);
+        while (copy_from == -1)
+            pthread_cond_wait(&copy_buffer_cond, &copy_buffer_mutex);
         
-            saved_copy_from = copy_from;
-            copy_from = -1;
+        pthread_mutex_lock(&client_list_mutex);
+        int i;
+        for (i = 0; i < client_counter; i++)
+            if (i != copy_from)
+                send_message(client_data[i].sock_fd, client_data[copy_from].transmit_buffer);
+        pthread_mutex_unlock(&client_list_mutex);
+        
+        saved_copy_from = copy_from;
+        copy_from = -1;
         pthread_mutex_unlock(&copy_buffer_mutex);
         
         pthread_mutex_lock(&transmitted_mutex);
-            transmitted_from = saved_copy_from;
-            pthread_cond_signal(&transmitted_cond);
+        transmitted_from = saved_copy_from;
+        pthread_cond_signal(&transmitted_cond);
         pthread_mutex_unlock(&transmitted_mutex);
     }
 }
@@ -304,7 +348,7 @@ void clear_window(WINDOW *win) {
 int main(int argc, const char * argv[]) {
     /* Init ncurses */
     initscr();
-
+    
     /* Retrieve dimensions */
     getmaxyx(stdscr, window_height, window_width);
     
@@ -324,7 +368,12 @@ int main(int argc, const char * argv[]) {
     wrefresh(stdscr);
     
     /* Start listen loop */
-    start_server_loop(argv[1]);
+    if (argc == 3)
+        start_server_loop(argv[1], argv[2]);
+    else {
+        write_in_window("Two arguments needed - press any key to end\n");
+        wgetch(stdscr);
+    }
     
     endwin();
     return 0;

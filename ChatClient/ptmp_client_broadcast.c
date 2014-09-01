@@ -152,7 +152,7 @@ int connect_client(const char *host, const char *port) {
 void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message, ...) {
     va_list args;
     va_start(args, message);
-    move(*current_line, 1);
+    wmove(win, *current_line, 1);
     vwprintw(win, message, args);
     va_end(args);
     
@@ -190,8 +190,8 @@ void *send_thread_loop(void *sock_fd_ptr) {
         send_message(sock_fd, formatted_data);
         
         pthread_mutex_lock(&draw_mutex);
-            write_in_chat_window(formatted_data);
-            clear_window(input_window);
+        write_in_chat_window(formatted_data);
+        clear_window(input_window);
         pthread_mutex_unlock(&draw_mutex);
     }
     
@@ -210,11 +210,57 @@ void *receive_thread_loop(void *sock_fd_ptr) {
         char *rcvd_msg = process_message(sock_fd);
         
         pthread_mutex_lock(&draw_mutex);
-            write_in_chat_window(rcvd_msg);
+        write_in_chat_window(rcvd_msg);
         pthread_mutex_unlock(&draw_mutex);
         
         free(rcvd_msg);
     }
+}
+
+void search_servers(const char *network, const char *port) {
+    int sockfd, broadcast = 1;
+    struct addrinfo hints, *result;
+    
+    /* Specify required socket */
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_flags = AI_PASSIVE;
+    
+    /* Get an addrinfo struct for the broadcast address */
+    getaddrinfo(network, port, &hints, &result);
+    
+    /* Init socket */
+    sockfd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    
+    /* Allow broadcasting */
+    setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+    
+    /* Broadcast 0x7F 0x7F */
+    sendto(sockfd, "\x7f\x7f", 2, 0, result->ai_addr, result->ai_addrlen);
+    
+    /* Wait for replies */
+    struct sockaddr_in sender_address;
+    char address[INET_ADDRSTRLEN];
+    socklen_t addr_len = sizeof(sender_address);
+    char *buf = malloc(32);
+    int bytes_received;
+    
+    /* Set a 5 second receive timeout on the socket */
+    struct timeval tv;
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+    
+    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    
+    /* Loop until recvfrom returns an error */
+    while ((bytes_received = recvfrom(sockfd, buf, 32, 0, &sender_address, &addr_len)) > 0)
+        write_in_chat_window("Received reply from %s: %s\n", inet_ntop(sender_address.sin_family, &sender_address.sin_addr, address, sizeof(address)), buf);
+    
+    write_in_chat_window("Timed out - press any key\n");
+    wgetch(input_window);
+    
+    close(sockfd);
 }
 
 int main(int argc, const char * argv[]) {
@@ -251,40 +297,46 @@ int main(int argc, const char * argv[]) {
     wrefresh(chat_window);
     wrefresh(input_window);
     
-    if (argc == 3) {
-        /* Init network connection */
-        int sock_fd;
-        sock_fd = connect_client(argv[1], argv[2]);
-        
-        /* Send username to server */
-        write_in_input_window("Enter username: ");
-        username = (char *) malloc(32);
-        wgetnstr(input_window, username, 32);
-        send_message(sock_fd, username);
-        
-        /* Clear input window */
-        clear_window(input_window);
-        
-        /* Create I/O threads */
-        pthread_t send_thread, receive_thread;
-        pthread_attr_t joinable_attr;
-        pthread_attr_init(&joinable_attr);
-        pthread_attr_setdetachstate(&joinable_attr, PTHREAD_CREATE_JOINABLE);
-        
-        int *sock_fd_ptr = &sock_fd;
-        pthread_create(&send_thread, &joinable_attr, send_thread_loop, (void *) sock_fd_ptr);
-        pthread_create(&receive_thread, &joinable_attr, receive_thread_loop, (void *) sock_fd_ptr);
-        
-        pthread_join(send_thread, NULL);
-        pthread_join(receive_thread, NULL);
-        
-        free(username);
-        
-        endwin();
+    if (argc >= 3) {
+        if (strcmp(argv[1], "-b") == 0) {
+            /* Broadcast server lookup message */
+            search_servers(argv[2], argv[3]);
+        } else {
+            /* Init network connection */
+            int sock_fd;
+            sock_fd = connect_client(argv[1], argv[2]);
+            
+            /* Send username to server */
+            write_in_input_window("Enter username: ");
+            username = (char *) malloc(32);
+            wgetnstr(input_window, username, 32);
+            send_message(sock_fd, username);
+            
+            /* Clear input window */
+            clear_window(input_window);
+            
+            /* Create I/O threads */
+            pthread_t send_thread, receive_thread;
+            pthread_attr_t joinable_attr;
+            pthread_attr_init(&joinable_attr);
+            pthread_attr_setdetachstate(&joinable_attr, PTHREAD_CREATE_JOINABLE);
+            
+            int *sock_fd_ptr = &sock_fd;
+            pthread_create(&send_thread, &joinable_attr, send_thread_loop, (void *) sock_fd_ptr);
+            pthread_create(&receive_thread, &joinable_attr, receive_thread_loop, (void *) sock_fd_ptr);
+            
+            pthread_join(send_thread, NULL);
+            pthread_join(receive_thread, NULL);
+            
+            free(username);
+        }
     } else {
         fprintf(stderr, "Incorrect number of arguments\n");
         return 1;
     }
+    
+    endwin();
+
     return 0;
 }
 
