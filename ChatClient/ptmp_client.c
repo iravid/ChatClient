@@ -27,7 +27,7 @@
 
 char *process_message(int sock_fd);
 void send_message(int sock_fd, const char *buf);
-void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message);
+void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message, ...);
 
 /* UI stuff */
 WINDOW *chat_window;
@@ -41,8 +41,8 @@ pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 char *username;
 
-#define write_in_chat_window(m) write_in_window(chat_window, &current_chat_line, chat_height, m)
-#define write_in_input_window(m) write_in_window(input_window, &current_input_line, input_height, m)
+#define write_in_chat_window(m, ...) write_in_window(chat_window, &current_chat_line, chat_height, m, ##__VA_ARGS__)
+#define write_in_input_window(m, ...) write_in_window(input_window, &current_input_line, input_height, m, ##__VA_ARGS__)
 
 void pack_32i(uint32_t value, char *buffer) {
     *buffer = value >> 24;
@@ -149,8 +149,12 @@ int connect_client(const char *host, const char *port) {
     return sock_fd;
 }
 
-void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message) {
-    mvwprintw(win, *current_line, 1, message);
+void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message, ...) {
+    va_list args;
+    va_start(args, message);
+    move(*current_line, 1);
+    vwprintw(win, message, args);
+    va_end(args);
     
     if (*current_line != window_height)
         (*current_line)++;
@@ -206,7 +210,7 @@ void *receive_thread_loop(void *sock_fd_ptr) {
         char *rcvd_msg = process_message(sock_fd);
         
         pthread_mutex_lock(&draw_mutex);
-        write_in_chat_window(rcvd_msg);
+            write_in_chat_window(rcvd_msg);
         pthread_mutex_unlock(&draw_mutex);
         
         free(rcvd_msg);
