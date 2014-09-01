@@ -22,11 +22,10 @@
 #include <curses.h>
 
 #define LEN_FIELD_SIZE 4
-#define PORT_NUMBER "8889"
 
 char *process_message(int sock_fd);
 void send_message(int sock_fd, const char *buf);
-void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message);
+void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message, ...);
 
 WINDOW *chat_window;
 WINDOW *input_window;
@@ -34,8 +33,8 @@ WINDOW *input_window;
 int chat_height, input_height;
 int current_chat_line, current_input_line;
 
-#define write_in_chat_window(m) write_in_window(chat_window, &current_chat_line, chat_height, m)
-#define write_in_input_window(m) write_in_window(input_window, &current_window_line, window_height, m)
+#define write_in_chat_window(m, ...) write_in_window(chat_window, &current_chat_line, chat_height, m, ##__VA_ARGS__)
+#define write_in_input_window(m, ...) write_in_window(input_window, &current_window_line, window_height, m, ##__VA_ARGS__)
 
 void pack_32i(uint32_t value, char *buffer) {
     *buffer = value >> 24;
@@ -118,7 +117,7 @@ char *process_message(int sock_fd) {
     return data_buf;
 }
 
-int start_server() {
+int start_server(const char *port) {
     struct sockaddr_in local_address, remote_address;
     socklen_t remote_address_size;
     
@@ -126,7 +125,7 @@ int start_server() {
     
     /* Specify socket parameters */
     local_address.sin_family = AF_INET;
-    local_address.sin_port = htons(8889);
+    local_address.sin_port = htons(atoi(port));
     local_address.sin_addr.s_addr = INADDR_ANY;
     
     /* Create a TCP socket */
@@ -153,7 +152,7 @@ int start_server() {
         exit(-1);
     }
     
-    write_in_chat_window("[info] Listening on 0.0.0.0:8889\n");
+    write_in_chat_window("[info] Listening on 0.0.0.0:%s\n", port);
     
     /* Wait for a connection */
     remote_address_size = sizeof(remote_address);
@@ -167,7 +166,7 @@ int start_server() {
     return new_sock_fd;
 }
 
-int connect_client() {
+int connect_client(const char *hostname, const char *port) {
     int sock_fd;
     struct addrinfo hints, *result;
     
@@ -176,7 +175,7 @@ int connect_client() {
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
     
-    getaddrinfo("localhost", PORT_NUMBER, &hints, &result);
+    getaddrinfo(hostname, port, &hints, &result);
     
     sock_fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (connect(sock_fd, result->ai_addr, result->ai_addrlen) == -1) {
@@ -191,8 +190,12 @@ int connect_client() {
     return sock_fd;
 }
 
-void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message) {
-    mvwprintw(win, *current_line, 1, message);
+void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message, ...) {
+    va_list args;
+    va_start(args, message);
+    move(*current_line, 1);
+    vwprintw(win, message, args);
+    va_end(args);
     
     if (*current_line != window_height)
         (*current_line)++;
@@ -238,10 +241,10 @@ int main(int argc, const char * argv[]) {
     
     /* Init network connection */
     int sock_fd;
-    if (argc <= 1)
-        sock_fd = start_server();
+    if (argc <= 2)
+        sock_fd = start_server(argv[1]);
     else
-        sock_fd = connect_client();
+        sock_fd = connect_client(argv[1], argv[2]);
     
     while (1) {
         char *input_buffer = (char *) malloc(1024);
