@@ -199,7 +199,7 @@ int connect_client(const char *hostname, const char *port) {
 void write_in_window(WINDOW *win, int *current_line, int window_height, const char *message, ...) {
     va_list args;
     va_start(args, message);
-    move(*current_line, 1);
+    wmove(win, *current_line, 1);
     vwprintw(win, message, args);
     va_end(args);
     
