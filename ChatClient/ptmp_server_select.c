@@ -175,6 +175,7 @@ void start_server_loop(const char *port) {
     
     write_in_window("[info] Started listening");
     
+    /* Spawn the transmission thread */
     pthread_t transmit_handle;
     pthread_create(&transmit_handle, NULL, transmit_thread, NULL);
     
@@ -184,22 +185,28 @@ void start_server_loop(const char *port) {
     fd_set all_sockets, ready_sockets;
     int max_fd;
 
+    /* Insert the listening socket to the socket set */
     FD_SET(listen_fd, &all_sockets);
+    /* Keep track of the maximum fd */
     max_fd = listen_fd;
     
     while (1) {
         ready_sockets = all_sockets;
+        /* Wait for sockets to become available for reading */
         if (select(max_fd + 1, &ready_sockets, NULL, NULL, NULL) == -1) {
             perror("select");
             exit(1);
         }
         
+        /* Iterate on all numbers up to max_fd */
         int i;
         for (i = 0; i <= max_fd; i++) {
+            /* If the i-th FD is ready to be read from... */
             if (FD_ISSET(i, &ready_sockets)) {
                 if (i == listen_fd) {
-                    /* New connection waiting */
+                    /* The i-th fd is the listen_fd - new connection waiting */
                     int new_sock_fd = accept(listen_fd, (struct sockaddr *) &remote_address, &remote_address_size);
+                    /* Read username */
                     char *username = process_message(new_sock_fd);
                     
                     if ((clients_counter + 1) == MAX_CLIENTS) {
@@ -217,6 +224,7 @@ void start_server_loop(const char *port) {
                     if (new_sock_fd > max_fd)
                         max_fd = new_sock_fd;
                     
+                    /* Lock client list and add the new client */
                     pthread_mutex_lock(&client_list_mutex);
                         clients[clients_counter].sock_fd = new_sock_fd;
                         clients[clients_counter].username = username;
@@ -226,6 +234,7 @@ void start_server_loop(const char *port) {
                     /* Client wants to send data */
                     copy_buffer = process_message(i);
                     
+                    /* Lock copy buffer */
                     pthread_mutex_lock(&copy_buffer_mutex);
                         /* The transmit thread needs the origin of the message */
                         copy_buffer_flag = i;
@@ -253,7 +262,6 @@ void start_server_loop(const char *port) {
             }
         }
     }
-    
     
     /* Close listening socket */
     close(listen_fd);

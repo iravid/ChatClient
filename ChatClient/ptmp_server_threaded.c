@@ -181,6 +181,7 @@ void start_server_loop(const char *port) {
     
     write_in_window("[info] Started listening");
     
+    /* Spawn transmission thread */
     pthread_t transmit_handle;
     pthread_create(&transmit_handle, NULL, transmit_thread, NULL);
     
