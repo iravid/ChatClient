@@ -240,27 +240,30 @@ void write_in_window(const char *message, ...) {
 }
 
 void *client_thread_loop(void *thread_data) {
-    /* process_message
-     * Acquire draw mutex, draw, release
-     * Repeat
-     */
     thread_data_t *data = (thread_data_t *) thread_data;
     
     while (1) {
+        /* Wait for a message to arrive */
         data->transmit_buffer = process_message(data->sock_fd);
         
+        /* Lock the copy buffer mutex */
         pthread_mutex_lock(&copy_buffer_mutex);
+            /* Assign our id to the copy source */
             copy_from = data->client_id;
+            /* Signal the transmission thread to wake up */
             pthread_cond_signal(&copy_buffer_cond);
         pthread_mutex_unlock(&copy_buffer_mutex);
         
         pthread_mutex_lock(&transmitted_mutex);
+            /* Wait until the transmission thread has finished */
             while (transmitted_from != data->client_id)
                 pthread_cond_wait(&transmitted_cond, &transmitted_mutex);
         
+            /* Reset the transmitted flag */
             transmitted_from = -1;
         pthread_mutex_unlock(&transmitted_mutex);
         
+        /* Lock the draw mutex and print the message */
         pthread_mutex_lock(&draw_mutex);
             write_in_window(data->transmit_buffer);
         pthread_mutex_unlock(&draw_mutex);
@@ -273,21 +276,27 @@ void *transmit_thread(void *unused) {
     int saved_copy_from;
     
     while (1) {
+        /* Lock the copy buffer mutex */
         pthread_mutex_lock(&copy_buffer_mutex);
+            /* Sleep until a client thread wants to transmit */
             while (copy_from == -1)
                 pthread_cond_wait(&copy_buffer_cond, &copy_buffer_mutex);
-            
+        
+            /* Lock the client list */
             pthread_mutex_lock(&client_list_mutex);
+                /* Transmit the message on all other sockets */
                 int i;
                 for (i = 0; i < client_counter; i++)
                     if (i != copy_from)
                         send_message(client_data[i].sock_fd, client_data[copy_from].transmit_buffer);
             pthread_mutex_unlock(&client_list_mutex);
         
+            /* Save the thread that wanted to transmit and reset copy_from */
             saved_copy_from = copy_from;
             copy_from = -1;
         pthread_mutex_unlock(&copy_buffer_mutex);
         
+        /* Lock transmitted mutex, signal the waiting thread that we have finished transmitting */
         pthread_mutex_lock(&transmitted_mutex);
             transmitted_from = saved_copy_from;
             pthread_cond_signal(&transmitted_cond);
