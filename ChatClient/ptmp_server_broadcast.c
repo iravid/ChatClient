@@ -156,6 +156,7 @@ void *broadcast_listener(void *arg) {
     strcpy(padded_room_name, broadcast_data->room_name);
     memset((padded_room_name + strlen(padded_room_name)), '\0', 32 - strlen(padded_room_name));
     
+    /* Open the listener socket */
     int sockfd;
     struct addrinfo hints, *result;
     
@@ -172,11 +173,19 @@ void *broadcast_listener(void *arg) {
     
     struct sockaddr_in sender_address;
     socklen_t addr_len = sizeof(sender_address);
-    char *buf = malloc(2);
     
     while (1) {
+        /* Allocate two bytes for 0x7F 0x7F */
+        char *buf = malloc(2);
+        
+        /* Read two bytes from socket */
         int bytes_received = recvfrom(sockfd, buf, 2, 0, &sender_address, &addr_len);
-        sendto(sockfd, padded_room_name, 32, 0, (struct sockaddr *) &sender_address, addr_len);
+        
+        /* Check that the two bytes are indeed 0x7F 0x7F */
+        if (buf[0] == '\x7f' && buf[1] == '\x7f')
+            sendto(sockfd, padded_room_name, 32, 0, (struct sockaddr *) &sender_address, addr_len);
+        
+        free(buf);
     }
 }
 
