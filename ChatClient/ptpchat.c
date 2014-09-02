@@ -87,6 +87,7 @@ char *process_message(int sock_fd) {
     memset(sock_buf, 0, 1024);
     if (recv(sock_fd, sock_buf, LEN_FIELD_SIZE, 0) == 0) {
         write_in_chat_window("[info] Connection closed\n");
+        endwin();
         exit(0);
     }
     
